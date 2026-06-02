@@ -39,8 +39,12 @@ class SynchronizedLyrics(val sentences: List<Pair<Long, String>>, private val po
     private val currentIndex: Int
         get() {
             var index = -1
+            val currentPos = positionProvider()
+            
+            // Fixed: Use > instead of >= for proper timing synchronization
+            // This ensures we don't skip lines due to boundary conditions
             for (item in sentences) {
-                if (item.first >= positionProvider()) break
+                if (item.first > currentPos) break
                 index++
             }
             return if (index == -1) 0 else index
